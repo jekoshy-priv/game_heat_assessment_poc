@@ -243,20 +243,7 @@ if calculate:
     )
 
     st.subheader("Heat Stress Assessment Results")
-    # Map assessment to colors
-    def color_assessment(val):
-        if val == "No cooling breaks required":
-            return "background-color: lightgreen"
-        elif val == "Cooling breaks recommended":
-            return "background-color: yellow"
-        elif val == "Caution: Extended breaks recommended":
-            return "background-color: red; color: white"
-        elif val == "Delay/Suspend Play":
-            return "background-color: lightgrey"
-        else:
-            return ""
+    st.dataframe(results, use_container_width=True)
 
-    # Display dataframe with color coding for the 'Assessment' column
-    st.dataframe(results.style.applymap(color_assessment, subset=["Assessment"]), use_container_width=True)
-
+    # Placeholder for future calculations
     st.success("Calculation completed.")
