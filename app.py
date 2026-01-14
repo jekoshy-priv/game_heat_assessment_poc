@@ -48,13 +48,13 @@ def insert_to_databricks_with_id(df):
             # 1️⃣ Get current max assessment_id
             cursor.execute("""
                 SELECT COALESCE(MAX(assessment_id), 0)
-                FROM nrl_datalakehouse_qa.game_heat_assessment
+                FROM nrl_datalakehouse_qa.bronze.game_heat_assessment
             """)
             start_id = cursor.fetchone()[0] + 1
 
             # 2️⃣ Insert rows with incremental IDs
             insert_sql = """
-                INSERT INTO nrl_datalakehouse_qa.game_heat_assessment
+                INSERT INTO nrl_datalakehouse_qa.bronze.game_heat_assessment
                 (assessment_id, records_type, club, venue, gender,
                  player, hsi, assessment, sweat_rate, created_at)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
