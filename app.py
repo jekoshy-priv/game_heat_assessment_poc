@@ -216,7 +216,7 @@ def calculate_heat_metrics(
     df["gender"] = gender
     df["created_at"] = datetime.datetime.now(ZoneInfo("Australia/Sydney")).strftime("%Y-%m-%d %H:%M:%S")
 
-    # Final output
+   
     return df[[
         "records_type",
         "club",
