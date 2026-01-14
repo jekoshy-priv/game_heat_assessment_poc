@@ -5,8 +5,10 @@ import datetime
 from zoneinfo import ZoneInfo 
 #from databricks import sql
 
-st.set_page_config(layout="wide")
-st.title("NRL Heat Assessment")
+st.set_page_config(
+    page_title="NRL Heat Assessment",
+    layout="wide"    # optional
+)
 st.header("NRL | Game Heat Assessment")
 
 PLAYER_DATA = pd.DataFrame([
