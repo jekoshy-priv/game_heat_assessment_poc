@@ -6,8 +6,8 @@ from zoneinfo import ZoneInfo
 #from databricks import sql
 
 st.set_page_config(layout="wide")
-st.title("NRL | Heat Assessment App")
-st.header("Game Heat Assessment")
+st.title("NRL Heat Assessment")
+st.header("NRL | Game Heat Assessment")
 
 PLAYER_DATA = pd.DataFrame([
     ["Hit-Up Forward", 122.0, 1.94, 24.8, 1.5],
