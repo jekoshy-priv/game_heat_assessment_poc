@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 import datetime
 from zoneinfo import ZoneInfo 
-from databricks import sql
+#from databricks import sql
 
 st.set_page_config(layout="wide")
 
@@ -33,49 +33,6 @@ def float_input(label, default=""):
     except ValueError:
         st.error(f"{label} must be a number")
         return None
-    
-def insert_to_databricks_with_id(df):
-    cfg = st.secrets["databricks"]
-
-    with sql.connect(
-        server_hostname=cfg["server_hostname"],
-        http_path=cfg["http_path"],
-        access_token=cfg["access_token"],
-    ) as conn:
-
-        with conn.cursor() as cursor:
-            # 1️⃣ Get current max assessment_id
-            cursor.execute("""
-                SELECT COALESCE(MAX(assessment_id), 0)
-                FROM nrl_datalakehouse_qa.bronze.game_heat_assessment
-            """)
-            new_assessment_id = cursor.fetchone()[0] + 1  # this will be the ID for the whole assessment
-
-            # 2️⃣ Insert all rows with the SAME assessment_id
-            insert_sql = """
-                INSERT INTO nrl_datalakehouse_qa.bronze.game_heat_assessment
-                (assessment_id, records_type, club, venue, gender,
-                player, hsi, assessment, sweat_rate, created_at)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """
-
-            for _, row in df.iterrows():
-                cursor.execute(
-                    insert_sql,
-                    (
-                        new_assessment_id,          # same for all rows
-                        row["records_type"],
-                        row["club"],
-                        row["venue"],
-                        row["gender"],
-                        row["Player"],
-                        int(row["HSI"]),
-                        row["Assessment"],
-                        float(row["Sweat_Rate"]),
-                        row["created_at"],
-                    )
-                )
-            conn.commit()
 
 # Use a form so everything submits together
 with st.form("heat_assessment_form"):
@@ -289,6 +246,6 @@ if calculate:
 
     #try:
         #insert_to_databricks_with_id(results)
-        #st.success("Inserted into bronze.game_heat_assessment")
+        #st.success("Inserted into <table>")
     #except Exception as e:
      #   st.error(f"Insert failed: {e}")
