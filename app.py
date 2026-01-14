@@ -6,7 +6,7 @@ from zoneinfo import ZoneInfo
 #from databricks import sql
 
 st.set_page_config(
-    page_title="NRL Heat Assessment",
+    page_title="NRL Game Heat Assessment",
     layout="wide"    # optional
 )
 st.header("NRL | Game Heat Assessment")
