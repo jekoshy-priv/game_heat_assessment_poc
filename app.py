@@ -44,27 +44,26 @@ def insert_to_databricks_with_id(df):
     ) as conn:
 
         with conn.cursor() as cursor:
-
             # 1️⃣ Get current max assessment_id
             cursor.execute("""
                 SELECT COALESCE(MAX(assessment_id), 0)
                 FROM nrl_datalakehouse_qa.bronze.game_heat_assessment
             """)
-            start_id = cursor.fetchone()[0] + 1
+            new_assessment_id = cursor.fetchone()[0] + 1  # this will be the ID for the whole assessment
 
-            # 2️⃣ Insert rows with incremental IDs
+            # 2️⃣ Insert all rows with the SAME assessment_id
             insert_sql = """
                 INSERT INTO nrl_datalakehouse_qa.bronze.game_heat_assessment
                 (assessment_id, records_type, club, venue, gender,
-                 player, hsi, assessment, sweat_rate, created_at)
+                player, hsi, assessment, sweat_rate, created_at)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """
 
-            for i, (_, row) in enumerate(df.iterrows()):
+            for _, row in df.iterrows():
                 cursor.execute(
                     insert_sql,
                     (
-                        start_id + i,
+                        new_assessment_id,          # same for all rows
                         row["records_type"],
                         row["club"],
                         row["venue"],
@@ -76,6 +75,7 @@ def insert_to_databricks_with_id(df):
                         row["created_at"],
                     )
                 )
+            conn.commit()
 
 # Use a form so everything submits together
 with st.form("heat_assessment_form"):
@@ -288,6 +288,7 @@ if calculate:
 
     try:
         insert_to_databricks_with_id(results)
-        st.success("Inserted into Databricks with assessment_id")
+        st.success("Inserted into game_heat_assessment")
+        st.dataframe(results, use_container_width=True)
     except Exception as e:
         st.error(f"Insert failed: {e}")
