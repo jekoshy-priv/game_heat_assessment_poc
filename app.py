@@ -285,10 +285,10 @@ if calculate:
         club=club_name,
         venue=venue
     )
+    st.dataframe(results, use_container_width=True)
 
     try:
         insert_to_databricks_with_id(results)
         st.success("Inserted into game_heat_assessment")
-        st.dataframe(results, use_container_width=True)
     except Exception as e:
         st.error(f"Insert failed: {e}")
