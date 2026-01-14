@@ -287,8 +287,8 @@ if calculate:
     )
     st.dataframe(results, use_container_width=True)
 
-    try:
-        insert_to_databricks_with_id(results)
-        st.success("Inserted into game_heat_assessment")
-    except Exception as e:
-        st.error(f"Insert failed: {e}")
+    #try:
+        #insert_to_databricks_with_id(results)
+        #st.success("Inserted into bronze.game_heat_assessment")
+    #except Exception as e:
+     #   st.error(f"Insert failed: {e}")
