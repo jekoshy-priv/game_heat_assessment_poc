@@ -233,23 +233,26 @@ def calculate_heat_metrics(
     })
 
 def assessment_color(val):
-    val = val.lower()
 
-    if "delay" in val or "postpone" in val or "suspend" in val:
-        # Grey – Delay / Postpone Match
+    if val == "Delay/Postpone Match":
+        # Grey
         return "background-color: #9e9e9e; color: white;"
 
-    elif "caution" in val:
-        # Red – Caution: Implement...
+    elif val == "Caution: Implement extended cooling strategies":
+        # Red
         return "background-color: #d32f2f; color: white;"
 
-    elif "basic cooling" in val:
-        # Yellow – Implement basic cooling strategies
+    elif val == "Implement basic cooling strategies":
+        # Yellow
         return "background-color: #fbc02d; color: black;"
 
-    else:
-        # Green – No cooling breaks required
+    elif val == "No cooling breaks required":
+        # Green
         return "background-color: #388e3c; color: white;"
+
+    else:
+        # Fallback (in case of unexpected text)
+        return ""
 
 # Action after button press
 if calculate:
