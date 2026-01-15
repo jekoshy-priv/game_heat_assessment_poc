@@ -188,7 +188,7 @@ def calculate_heat_metrics(
 
     df["Sweat_Rate"] = df["Sweat_Rate_g_hr"] / 1000
 
-    df["HSI"] = df["HSI"].round(0)
+    df["HSI"] = df["HSI"].round(0).astype(int)
 
     # -----------------------------
     # ASSESSMENT
@@ -228,7 +228,7 @@ def calculate_heat_metrics(
         "Sweat_Rate",
         "created_at"
     ]].round({
-        #"HSI": 0,
+        "HSI": 0,
         "Sweat_Rate": 2
     })
 
