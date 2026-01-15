@@ -232,6 +232,27 @@ def calculate_heat_metrics(
         "Sweat_Rate": 2
     })
 
+def assessment_color(val):
+    if "Delay/Suspend" in val:
+        return "background-color: #d32f2f; color: white;"
+    elif "Extended breaks" in val:
+        return "background-color: #f57c00; color: white;"
+    elif "Cooling breaks" in val:
+        return "background-color: #fbc02d;"
+    else:
+        return "background-color: #388e3c; color: white;"
+
+
+def hsi_color(val):
+    if val > 250:
+        return "background-color: #b71c1c; color: white;"
+    elif val > 200:
+        return "background-color: #e65100; color: white;"
+    elif val > 150:
+        return "background-color: #fdd835;"
+    else:
+        return "background-color: #2e7d32; color: white;"
+
 # Action after button press
 if calculate:
     results = calculate_heat_metrics(
@@ -244,7 +265,15 @@ if calculate:
         club=club_name,
         venue=venue
     )
-    st.dataframe(results, use_container_width=True)
+
+    styled_results = (
+        results.style
+        .applymap(hsi_color, subset=["HSI"])
+        .applymap(assessment_color, subset=["Assessment"])
+    )
+
+    st.table(styled_results)
+
 
     #try:
         #insert_to_databricks_with_id(results)
