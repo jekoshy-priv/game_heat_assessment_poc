@@ -242,17 +242,6 @@ def assessment_color(val):
     else:
         return "background-color: #388e3c; color: white;"
 
-
-def hsi_color(val):
-    if val > 250:
-        return "background-color: #b71c1c; color: white;"
-    elif val > 200:
-        return "background-color: #e65100; color: white;"
-    elif val > 150:
-        return "background-color: #fdd835;"
-    else:
-        return "background-color: #2e7d32; color: white;"
-
 # Action after button press
 if calculate:
     results = calculate_heat_metrics(
@@ -268,7 +257,6 @@ if calculate:
 
     styled_results = (
         results.style
-        .applymap(hsi_color, subset=["HSI"])
         .applymap(assessment_color, subset=["Assessment"])
     )
 
