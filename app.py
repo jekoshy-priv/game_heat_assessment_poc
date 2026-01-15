@@ -197,7 +197,7 @@ def calculate_heat_metrics(
         df["Assessment"] = np.select(
             [df["HSI"] > 250, df["HSI"] > 200, df["HSI"] > 150],
             ["Delay/Suspend Play",
-             "Caution: Extended breaks recommended",
+             "Caution: Implement Full Heat Policy Strategies",
              "Cooling breaks recommended"],
             default="No cooling breaks required"
         )
@@ -205,7 +205,7 @@ def calculate_heat_metrics(
         df["Assessment"] = np.select(
             [df["HSI"] > 225, df["HSI"] > 180, df["HSI"] > 135],
             ["Delay/Suspend Play",
-             "Caution: Extended breaks recommended",
+             "Caution: Implement Full Heat Policy Strategies",
              "Cooling breaks recommended"],
             default="No cooling breaks required"
         )
@@ -234,15 +234,15 @@ def calculate_heat_metrics(
 
 def assessment_color(val):
 
-    if val == "Delay/Postpone Match":
+    if val == "Delay/Suspend Play":
         # Grey
         return "background-color: #9e9e9e; color: white;"
 
-    elif val == "Caution: Implement extended cooling strategies":
+    elif val == "Caution: Implement Full Heat Policy Strategies":
         # Red
         return "background-color: #d32f2f; color: white;"
 
-    elif val == "Implement basic cooling strategies":
+    elif val == "Cooling breaks recommended":
         # Yellow
         return "background-color: #fbc02d; color: black;"
 
