@@ -268,13 +268,14 @@ if calculate:
         venue=venue
     )
 
+    results = results.reset_index(drop=True)
+
     styled_results = (
         results.style
         .applymap(assessment_color, subset=["Assessment"])
     )
 
     st.table(styled_results)
-
 
     #try:
         #insert_to_databricks_with_id(results)
