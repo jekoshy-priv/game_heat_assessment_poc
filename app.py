@@ -270,11 +270,12 @@ if calculate:
 
     results = results.reset_index(drop=True)
 
-    st.dataframe(
-        results.style.applymap(assessment_color, subset=["Assessment"]),
-        hide_index=True,
-        use_container_width=True
+    results = results.reset_index(drop=True)
+
+    st.table(
+        results.style.applymap(assessment_color, subset=["Assessment"])
     )
+
 
     #try:
         #insert_to_databricks_with_id(results)
