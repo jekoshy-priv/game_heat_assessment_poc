@@ -219,15 +219,15 @@ def calculate_heat_metrics(
 
    
     return df[[
-        "records_type",
-        "club",
-        "venue",
-        "gender",
+        #"records_type",
+        #"club",
+        #"venue",
+        #"gender",
         "Player",
-        "HSI",
         "Assessment",
-        "Sweat_Rate",
-        "created_at"
+        "HSI",
+        "Sweat_Rate"
+        #"created_at"
     ]].round({
         "HSI": 0,
         "Sweat_Rate": 2
