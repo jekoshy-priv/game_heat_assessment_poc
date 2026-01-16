@@ -270,10 +270,19 @@ if calculate:
 
     results = results.reset_index(drop=True)
 
-    results = results.reset_index(drop=True)
+    
+    styled_results = results.copy()
+    styled_results["Assessment"] = styled_results["Assessment"].apply(
+        lambda x: f'<div style="{assessment_color(x)} padding:4px; text-align:center">{x}</div>'
+    )
 
-    st.table(
-        results.style.applymap(assessment_color, subset=["Assessment"])
+    # Convert to HTML and hide index
+    html_table = styled_results.to_html(index=False, escape=False)
+
+    # Wrap in a responsive div
+    st.markdown(
+        f'<div style="overflow-x:auto; width:100%">{html_table}</div>',
+        unsafe_allow_html=True
     )
 
 
