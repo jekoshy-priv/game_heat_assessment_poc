@@ -3,7 +3,10 @@ import pandas as pd
 import numpy as np
 import datetime
 from zoneinfo import ZoneInfo 
+import os
 #from databricks import sql
+
+CSV_PATH = "heat_assessment_log.csv"
 
 st.set_page_config(
     page_title="NRL Game Heat Assessment",
@@ -217,17 +220,13 @@ def calculate_heat_metrics(
     df["gender"] = gender
     df["created_at"] = datetime.datetime.now(ZoneInfo("Australia/Sydney")).strftime("%Y-%m-%d %H:%M:%S")
 
-   
-    return df[[
-        #"records_type",
-        #"club",
-        #"venue",
-        #"gender",
+    full_df = df.copy()
+
+    return full_df, df[[
         "Player",
         "Assessment",
         "HSI",
         "Sweat_Rate"
-        #"created_at"
     ]].round({
         "HSI": 0,
         "Sweat_Rate": 2
@@ -257,7 +256,7 @@ def assessment_color(val):
 
 # Action after button press
 if calculate:
-    results = calculate_heat_metrics(
+    full_df, results = calculate_heat_metrics(
         air_temp=air_temp,
         globe_temp=globe_temp,
         humidity=humidity,
@@ -267,6 +266,11 @@ if calculate:
         club=club_name,
         venue=venue
     )
+
+    if os.path.exists(CSV_PATH):
+        full_df.to_csv(CSV_PATH, mode="a", header=False, index=False)
+    else:
+        full_df.to_csv(CSV_PATH, mode="w", header=True, index=False)
 
     results = results.reset_index(drop=True)
 
