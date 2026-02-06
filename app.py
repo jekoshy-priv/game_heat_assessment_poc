@@ -289,6 +289,9 @@ if calculate:
         unsafe_allow_html=True
     )
 
+    st.success(f"CSV written to: {os.path.abspath(CSV_PATH)}")
+
+
 
     #try:
         #insert_to_databricks_with_id(results)
