@@ -4,13 +4,12 @@ import numpy as np
 import datetime
 from zoneinfo import ZoneInfo 
 import os
-#from databricks import sql
 
 CSV_PATH = "heat_assessment_log.csv"
 
 st.set_page_config(
     page_title="NRL Game Heat Assessment",
-    layout="wide"    # optional
+    layout="wide"    
 )
 st.header("NRL | Game Heat Assessment")
 
@@ -24,7 +23,6 @@ PLAYER_DATA = pd.DataFrame([
     "Rate_of_Oxygen_Uptake", "vself"
 ])
 
-# Club list
 clubs = [
     "","Broncos","Raiders","Bulldogs","Sharks","Dolphins","Titans",
     "Sea Eagles","Storm","Warriors","Knights","Cowboys","Eels",
@@ -39,7 +37,6 @@ def float_input(label, default=""):
         st.error(f"{label} must be a number")
         return None
 
-# Use a form so everything submits together
 with st.form("heat_assessment_form"):
     col1, col2 = st.columns(2)
 
@@ -63,9 +60,6 @@ def calculate_heat_metrics(
 ):
     df = PLAYER_DATA.copy()
 
-    # -----------------------------
-    # SUBJECT
-    # -----------------------------
     df["Mean_Radiant_Temperature"] = (
         ((globe_temp + 273) ** 4 +
          (2.5e8 * air_speed ** 0.6 * (globe_temp - air_temp))) ** 0.25
@@ -194,9 +188,6 @@ def calculate_heat_metrics(
     df["HSI"] = df["HSI"].round(0).astype(int)
     df["Sweat_Rate"] = df["Sweat_Rate"].round(2)
 
-    # -----------------------------
-    # ASSESSMENT
-    # -----------------------------
     if gender.lower() == "male":
         df["Assessment"] = np.select(
             [df["HSI"] > 250, df["HSI"] > 200, df["HSI"] > 150],
@@ -290,8 +281,6 @@ if calculate:
     )
 
     #st.success(f"CSV written to: {os.path.abspath(CSV_PATH)}")
-
-
 
     #try:
         #insert_to_databricks_with_id(results)
