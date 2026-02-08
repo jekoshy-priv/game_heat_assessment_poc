@@ -31,6 +31,14 @@ clubs = [
     "Panthers","Rabbitohs","Dragons","Roosters","Wests Tigers"
 ]
 
+def float_input(label, default=""):
+    value = st.text_input(label, value=default)
+    try:
+        return float(value) if value != "" else None
+    except ValueError:
+        st.error(f"{label} must be a number")
+        return None
+
 # Use a form so everything submits together
 with st.form("heat_assessment_form"):
     col1, col2 = st.columns(2)
@@ -42,10 +50,10 @@ with st.form("heat_assessment_form"):
         gender = st.selectbox("Gender", ["","Male", "Female"])
 
     with col2:
-        air_temp = st.number_input("Air Temperature (°C)", value="", format="%.1f")
-        globe_temp = st.number_input("Globe Temperature (°C)", value="", format="%.1f")
-        humidity = st.number_input("Humidity (%)", value="", format="%.1f")
-        air_speed = st.number_input("Air Speed (m/s)", value="", format="%.1f")
+        air_temp = float_input("Air Temperature (°C)")
+        globe_temp = float_input("Globe Temperature (°C)")
+        humidity = float_input("Humidity (%)")
+        air_speed = float_input("Air Speed (m/s)")
 
     calculate = st.form_submit_button("Calculate")
 
