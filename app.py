@@ -42,10 +42,10 @@ with st.form("heat_assessment_form"):
         gender = st.selectbox("Gender", ["","Male", "Female"])
 
     with col2:
-        air_temp = st.number_input("Air Temperature (°C)", format="%.1f")
-        globe_temp = st.number_input("Globe Temperature (°C)", format="%.1f")
-        humidity = st.number_input("Humidity (%)", format="%.1f")
-        air_speed = st.number_input("Air Speed (m/s)", format="%.1f")
+        air_temp = st.number_input("Air Temperature (°C)", value="", format="%.1f")
+        globe_temp = st.number_input("Globe Temperature (°C)", value="", format="%.1f")
+        humidity = st.number_input("Humidity (%)", value="", format="%.1f")
+        air_speed = st.number_input("Air Speed (m/s)", value="", format="%.1f")
 
     calculate = st.form_submit_button("Calculate")
 
