@@ -278,8 +278,6 @@ if calculate:
 
     if os.path.exists(CSV_PATH):
         log_df.to_csv(CSV_PATH, mode="a", header=False, index=False)
-        st.write("Columns stored in CSV:")
-        st.write(list(log_df.columns))
 
         st.write("First row in CSV:")
         st.write(log_df.head(1))
