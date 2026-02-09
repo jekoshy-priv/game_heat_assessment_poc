@@ -38,6 +38,13 @@ def float_input(label, default=""):
     except ValueError:
         st.error(f"{label} must be a number")
         return None
+    
+def all_fields_filled(fields: dict):
+    """Return True if all values in the dictionary are not None or empty."""
+    for key, value in fields.items():
+        if value is None or value == "":
+            return False
+    return True
 
 with st.form("heat_assessment_form"):
     col1, col2 = st.columns(2)
@@ -53,6 +60,18 @@ with st.form("heat_assessment_form"):
         globe_temp = float_input("Globe Temperature (°C)")
         humidity = float_input("Humidity (%)")
         air_speed = float_input("Air Speed (m/s)")
+
+    form_values = {
+        "air_temp": air_temp,
+        "globe_temp": globe_temp,
+        "humidity": humidity,
+        "air_speed": air_speed,
+        "gender": gender,
+        "record_type": record_type,
+        "club": club_name,
+        "venue": venue
+    }
+
 
     calculate = st.form_submit_button("Submit")
 
@@ -249,16 +268,19 @@ def assessment_color(val):
 
 # Action after button press
 if calculate:
-    full_df, results = calculate_heat_metrics(
-        air_temp=air_temp,
-        globe_temp=globe_temp,
-        humidity=humidity,
-        air_speed=air_speed,
-        gender=gender,
-        record_type=record_type,
-        club=club_name,
-        venue=venue
-    )
+    if not all_fields_filled(form_values):
+        st.warning("⚠️ Please fill in all fields before submitting.")
+    else:
+        full_df, results = calculate_heat_metrics(
+            air_temp=air_temp,
+            globe_temp=globe_temp,
+            humidity=humidity,
+            air_speed=air_speed,
+            gender=gender,
+            record_type=record_type,
+            club=club_name,
+            venue=venue
+        )
 
     log_df = pd.DataFrame({
         "club": full_df["club"],
