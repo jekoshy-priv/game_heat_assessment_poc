@@ -54,21 +54,7 @@ with st.form("heat_assessment_form"):
         humidity = float_input("Humidity (%)")
         air_speed = float_input("Air Speed (m/s)")
 
-    all_fields_filled = all([
-        club_name != "",
-        record_type != "",
-        venue.strip() != "",
-        gender != "",
-        air_temp is not None,
-        globe_temp is not None,
-        humidity is not None,
-        air_speed is not None,
-    ])
-
-    calculate = st.form_submit_button(
-        "Submit",
-        disabled=not all_fields_filled
-    )
+    calculate = st.form_submit_button("Submit")
 
 def calculate_heat_metrics(
     air_temp, globe_temp, humidity, air_speed,
@@ -310,7 +296,7 @@ if calculate:
         unsafe_allow_html=True
     )
 
-    st.success(f"CSV written to: {os.path.abspath(CSV_PATH)}")
+    #st.success(f"CSV written to: {os.path.abspath(CSV_PATH)}")
 
     #try:
         #insert_to_databricks_with_id(results)
