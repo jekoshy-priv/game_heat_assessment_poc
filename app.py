@@ -23,6 +23,8 @@ PLAYER_DATA = pd.DataFrame([
     "Rate_of_Oxygen_Uptake", "vself"
 ])
 
+log_df = []
+
 clubs = [
     "","Broncos","Raiders","Bulldogs","Sharks","Dolphins","Titans",
     "Sea Eagles","Storm","Warriors","Knights","Cowboys","Eels",
@@ -213,6 +215,20 @@ def calculate_heat_metrics(
 
     full_df = df.copy()
 
+    log_df = pd.DataFrame({
+        "club": full_df["club"],
+        "records_type": full_df["records_type"],
+        "venue": full_df["venue"],
+        "gender": full_df["gender"],
+        "air_speed": air_speed,
+        "globe_temp": globe_temp,
+        "humidity": humidity,
+        "player": full_df["Player"],
+        "assessment": full_df["Assessment"],
+        "sweat_rate": full_df["Sweat_Rate"],
+        "created_at": full_df["created_at"],
+    })
+
     return full_df, df[[
         "Player",
         "Assessment",
@@ -261,12 +277,12 @@ if calculate:
     st.subheader("CSV Preview / Fields Test")
 
     if os.path.exists(CSV_PATH):
-        csv_df = pd.read_csv(CSV_PATH)
+        log_df.to_csv(CSV_PATH, mode="a", header=False, index=False)
         st.write("Columns stored in CSV:")
-        st.write(list(csv_df.columns))
+        st.write(list(log_df.columns))
 
         st.write("First row in CSV:")
-        st.write(csv_df.head(1))
+        st.write(log_df.head(1))
     else:
         st.info("CSV file not found yet. Submit a heat assessment first.")
 
