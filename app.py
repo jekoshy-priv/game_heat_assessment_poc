@@ -49,26 +49,12 @@ with st.form("heat_assessment_form"):
         gender = st.selectbox("Gender", ["","Male", "Female"])
 
     with col2:
-        air_temp = st.number_input("Air Temperature (°C)", format="%.1f")
-        globe_temp = st.number_input("Globe Temperature (°C)", format="%.1f")
-        humidity = st.number_input("Humidity (%)", min_value=0.0, max_value=100.0, format="%.1f")
-        air_speed = st.number_input("Air Speed (m/s)", format="%.2f")
+        air_temp = float_input("Air Temperature (°C)")
+        globe_temp = float_input("Globe Temperature (°C)")
+        humidity = float_input("Humidity (%)")
+        air_speed = float_input("Air Speed (m/s)")
 
-    all_filled = all([
-        club_name != "",
-        record_type != "",
-        venue.strip() != "",
-        gender != "",
-        air_temp != 0,
-        globe_temp != 0,
-        humidity != 0,
-        air_speed != 0
-    ])
-
-    calculate = st.form_submit_button(
-        "Submit",
-        disabled=not all_filled
-    )
+    calculate = st.form_submit_button("Submit")
 
 def calculate_heat_metrics(
     air_temp, globe_temp, humidity, air_speed,
