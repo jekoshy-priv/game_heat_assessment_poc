@@ -258,10 +258,23 @@ if calculate:
         venue=venue
     )
 
+    st.subheader("CSV Preview / Fields Test")
+
     if os.path.exists(CSV_PATH):
-        full_df.to_csv(CSV_PATH, mode="a", header=False, index=False)
+        csv_df = pd.read_csv(CSV_PATH)
+        st.write("Columns stored in CSV:")
+        st.write(list(csv_df.columns))
+
+        st.write("First row in CSV:")
+        st.write(csv_df.head(1))
     else:
-        full_df.to_csv(CSV_PATH, mode="w", header=True, index=False)
+        st.info("CSV file not found yet. Submit a heat assessment first.")
+
+
+   # if os.path.exists(CSV_PATH):
+   #     full_df.to_csv(CSV_PATH, mode="a", header=False, index=False)
+   # else:
+   #     full_df.to_csv(CSV_PATH, mode="w", header=True, index=False)
 
     results = results.reset_index(drop=True)
 
