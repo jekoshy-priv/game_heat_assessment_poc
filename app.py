@@ -54,7 +54,24 @@ with st.form("heat_assessment_form"):
         humidity = float_input("Humidity (%)")
         air_speed = float_input("Air Speed (m/s)")
 
-    calculate = st.form_submit_button("Submit")
+    all_fields_filled = all([
+        club_name != "",
+        record_type != "",
+        venue.strip() != "",
+        gender != "",
+        air_temp is not None,
+        globe_temp is not None,
+        humidity is not None,
+        air_speed is not None,
+    ])
+
+    if not all_fields_filled:
+        st.warning("All fields must be completed before submitting the assessment.")
+
+    calculate = st.form_submit_button(
+        "Submit",
+        disabled=not all_fields_filled
+    )
 
 def calculate_heat_metrics(
     air_temp, globe_temp, humidity, air_speed,
