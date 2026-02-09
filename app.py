@@ -65,9 +65,6 @@ with st.form("heat_assessment_form"):
         air_speed is not None,
     ])
 
-    if not all_fields_filled:
-        st.warning("All fields must be completed before submitting the assessment.")
-
     calculate = st.form_submit_button(
         "Submit",
         disabled=not all_fields_filled
