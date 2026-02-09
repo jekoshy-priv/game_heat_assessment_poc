@@ -7,6 +7,8 @@ import os
 
 CSV_PATH = "heat_assessment_log.csv"
 
+log_df = []
+
 st.set_page_config(
     page_title="NRL Game Heat Assessment",
     layout="wide"    
@@ -52,7 +54,7 @@ with st.form("heat_assessment_form"):
         humidity = float_input("Humidity (%)")
         air_speed = float_input("Air Speed (m/s)")
 
-    calculate = st.form_submit_button("Calculate")
+    calculate = st.form_submit_button("Submit")
 
 def calculate_heat_metrics(
     air_temp, globe_temp, humidity, air_speed,
@@ -258,10 +260,24 @@ if calculate:
         venue=venue
     )
 
+    log_df = pd.DataFrame({
+        "club": full_df["club"],
+        "records_type": full_df["records_type"],
+        "venue": full_df["venue"],
+        "gender": full_df["gender"],
+        "air_speed": air_speed,
+        "globe_temp": globe_temp,
+        "humidity": humidity,
+        "player": full_df["Player"],
+        "assessment": full_df["Assessment"],
+        "sweat_rate": full_df["Sweat_Rate"],
+        "created_at": full_df["created_at"],
+    })
+
     if os.path.exists(CSV_PATH):
-        full_df.to_csv(CSV_PATH, mode="a", header=False, index=False)
+        log_df.to_csv(CSV_PATH, mode="a", header=False, index=False)
     else:
-        full_df.to_csv(CSV_PATH, mode="w", header=True, index=False)
+        log_df.to_csv(CSV_PATH, mode="w", header=True, index=False)
 
     results = results.reset_index(drop=True)
 
@@ -280,7 +296,7 @@ if calculate:
         unsafe_allow_html=True
     )
 
-    #st.success(f"CSV written to: {os.path.abspath(CSV_PATH)}")
+    st.success(f"CSV written to: {os.path.abspath(CSV_PATH)}")
 
     #try:
         #insert_to_databricks_with_id(results)
