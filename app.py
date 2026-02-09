@@ -61,18 +61,6 @@ with st.form("heat_assessment_form"):
         humidity = float_input("Humidity (%)")
         air_speed = float_input("Air Speed (m/s)")
 
-    form_values = {
-        "air_temp": air_temp,
-        "globe_temp": globe_temp,
-        "humidity": humidity,
-        "air_speed": air_speed,
-        "gender": gender,
-        "record_type": record_type,
-        "club": club_name,
-        "venue": venue
-    }
-
-
     calculate = st.form_submit_button("Submit")
 
 def calculate_heat_metrics(
@@ -268,55 +256,71 @@ def assessment_color(val):
 
 # Action after button press
 if calculate:
+
+    form_values = {
+        "air_temp": air_temp,
+        "globe_temp": globe_temp,
+        "humidity": humidity,
+        "air_speed": air_speed,
+        "gender": gender,
+        "record_type": record_type,
+        "club": club_name,
+        "venue": venue
+    }
+
     if not all_fields_filled(form_values):
         st.warning("⚠️ Please fill in all fields before submitting.")
     else:
-        full_df, results = calculate_heat_metrics(
-            air_temp=air_temp,
-            globe_temp=globe_temp,
-            humidity=humidity,
-            air_speed=air_speed,
-            gender=gender,
-            record_type=record_type,
-            club=club_name,
-            venue=venue
-        )
+        try:
+            full_df, results = calculate_heat_metrics(
+                air_temp=air_temp,
+                globe_temp=globe_temp,
+                humidity=humidity,
+                air_speed=air_speed,
+                gender=gender,
+                record_type=record_type,
+                club=club_name,
+                venue=venue
+            )
 
-    log_df = pd.DataFrame({
-        "club": full_df["club"],
-        "records_type": full_df["records_type"],
-        "venue": full_df["venue"],
-        "gender": full_df["gender"],
-        "air_speed": air_speed,
-        "globe_temp": globe_temp,
-        "humidity": humidity,
-        "player": full_df["Player"],
-        "assessment": full_df["Assessment"],
-        "sweat_rate": full_df["Sweat_Rate"],
-        "created_at": full_df["created_at"],
-    })
+            # -----------------------------
+            # Log to CSV
+            # -----------------------------
+            log_df = pd.DataFrame({
+                "club": full_df["club"],
+                "records_type": full_df["records_type"],
+                "venue": full_df["venue"],
+                "gender": full_df["gender"],
+                "air_speed": air_speed,
+                "globe_temp": globe_temp,
+                "humidity": humidity,
+                "player": full_df["Player"],
+                "assessment": full_df["Assessment"],
+                "sweat_rate": full_df["Sweat_Rate"],
+                "created_at": full_df["created_at"],
+            })
 
-    if os.path.exists(CSV_PATH):
-        log_df.to_csv(CSV_PATH, mode="a", header=False, index=False)
-    else:
-        log_df.to_csv(CSV_PATH, mode="w", header=True, index=False)
+            if os.path.exists(CSV_PATH):
+                log_df.to_csv(CSV_PATH, mode="a", header=False, index=False)
+            else:
+                log_df.to_csv(CSV_PATH, mode="w", header=True, index=False)
 
-    results = results.reset_index(drop=True)
+            results = results.reset_index(drop=True)
 
-    
-    styled_results = results.copy()
-    styled_results["Assessment"] = styled_results["Assessment"].apply(
-        lambda x: f'<div style="{assessment_color(x)} padding:4px; text-align:center">{x}</div>'
-    )
+            # -----------------------------
+            # Display results with color
+            # -----------------------------
+            styled_results = results.copy()
+            styled_results["Assessment"] = styled_results["Assessment"].apply(
+                lambda x: f'<div style="{assessment_color(x)} padding:4px; text-align:center">{x}</div>'
+            )
 
-    # Convert to HTML and hide index
-    html_table = styled_results.to_html(index=False, escape=False)
+            html_table = styled_results.to_html(index=False, escape=False)
+            st.markdown(f'<div style="overflow-x:auto; width:100%">{html_table}</div>',
+                        unsafe_allow_html=True)
 
-    # Wrap in a responsive div
-    st.markdown(
-        f'<div style="overflow-x:auto; width:100%">{html_table}</div>',
-        unsafe_allow_html=True
-    )
+        except Exception as e:
+            st.error(f"⚠️ Could not calculate heat metrics: {e}")
 
     #st.success(f"CSV written to: {os.path.abspath(CSV_PATH)}")
 
