@@ -372,7 +372,7 @@ if calculate:
             insert_to_sharepoint(log_df)
             st.success("✅ Data successfully sent to SharePoint")
         except Exception as e:
-            st.warning(f"⚠️ Could not send data to SharePoint: {e}")
+        #    st.warning(f"⚠️ Could not send data to SharePoint: {e}")
 
     #st.success(f"CSV written to: {os.path.abspath(CSV_PATH)}")
 
