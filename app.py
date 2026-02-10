@@ -6,6 +6,7 @@ from zoneinfo import ZoneInfo
 import os
 import msal 
 import requests
+import re
 
 TENANT_ID = st.secrets["TENANT_ID"]
 CLIENT_ID = st.secrets["CLIENT_ID"]
@@ -98,11 +99,18 @@ def float_input(
     if value.strip() == "":
         return None
 
-    try:
-        num = float(value)
-    except ValueError:
-        st.error(f"{label} must be a valid number")
+    # Allow partial numeric typing (UX-friendly)
+    if value in {"-", ".", "-."}:
         return None
+
+    # Regex: valid float with optional decimals
+    float_pattern = rf"^-?\d*(\.\d{{0,{decimals}}})?$"
+
+    if not re.match(float_pattern, value):
+        st.error(f"{label} must be a numeric value (max {decimals} decimals)")
+        return None
+
+    num = float(value)
 
     # Range validation
     if min_value is not None and num < min_value:
@@ -113,10 +121,7 @@ def float_input(
         st.error(f"{label} must be ≤ {max_value}")
         return None
 
-    # Decimal enforcement
-    num = round(num, decimals)
-
-    return num
+    return round(num, decimals)
     
 def all_fields_filled(fields: dict):
     """Return True if all values in the dictionary are not None or empty."""
