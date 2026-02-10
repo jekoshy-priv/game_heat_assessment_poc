@@ -42,7 +42,7 @@ def insert_to_sharepoint(log_df):
                         "Assessment": row["assessment"],
                         "HSI": int(row["HSI"]),
                         "SweatRate": float(row["sweat_rate"]),
-                        "CreatedAt": row["created_at"].isoformat()
+                        "CreatedAt": row["created_at"]
                     }
                 }
 
