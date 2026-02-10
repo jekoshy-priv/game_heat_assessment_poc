@@ -2,3 +2,5 @@ streamlit==1.38.0
 pandas
 numpy
 databricks-sql-connector
+msal
+requests
