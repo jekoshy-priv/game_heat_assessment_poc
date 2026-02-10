@@ -16,8 +16,6 @@ SCOPE = ["https://graph.microsoft.com/.default"]
 
 #CSV_PATH = "heat_assessment_log.csv"
 
-log_df = []
-
 SITE_ID = st.secrets["SITE_ID"]
 LIST_ID = st.secrets["LIST_ID"]
 
@@ -32,21 +30,18 @@ def insert_to_sharepoint(log_df):
         payload = {
                     "fields": {
                         "Title": row["player"],
-
                         "Club": row["club"],
                         "Record_x0020_Type": row["records_type"],
                         "Venue": row["venue"],
                         "Gender": row["gender"],
                         "AirTemperature_x0028_C_x0029_": float(row["air_temp"]),
-                        "AirSpeed_x0028_m_x002f_s_x0029_": float(row["air_speed"]),
                         "GlobeTemperature_x0028_C_x0029_": float(row["globe_temp"]),
                         "Humidity_x0028__x0025__x0029_": float(row["humidity"]),
-
-                        "HSI": int(row["HSI"]),
-
+                        "AirSpeed_x0028_m_x002f_s_x0029_": float(row["air_speed"]),
+                        "Player": row["player"],
                         "Assessment": row["assessment"],
+                        "HSI": int(row["HSI"]),
                         "SweatRate": float(row["sweat_rate"]),
-
                         "CreatedAt": row["created_at"]
                     }
                 }
