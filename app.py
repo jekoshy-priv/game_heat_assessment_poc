@@ -31,26 +31,31 @@ def insert_to_sharepoint(log_df):
     for idx, row in log_df.iterrows():
         payload = {
             "fields": {
-                "Title": row["player"],
-
-                "Club": row["club"],
-                "RecordType": row["records_type"],
-                "Venue": row["venue"],
-                "Gender": row["gender"],
+                "Title": str(row["player"]),
+                "Club": str(row["club"]),
+                "RecordType": str(row["records_type"]),
+                "Venue": str(row["venue"]),
+                "Gender": str(row["gender"]),
                 "AirTemperature_x0028_C_x0029_": float(row["air_temp"]),
                 "AirSpeed_x0028_m_x002f_s_x0029_": float(row["air_speed"]),
                 "GlobeTemperature_x0028_C_x0029_": float(row["globe_temp"]),
                 "Humidity_x0028__x0025__x0029_": float(row["humidity"]),
-
                 "HSI": int(row["HSI"]),
-
-                "Assessment": row["assessment"],
+                "Assessment": str(row["assessment"]),
                 "SweatRate": float(row["sweat_rate"]),
-
-                # Use ISO 8601 datetime format
-                "CreatedAt": datetime.datetime.now(ZoneInfo("Australia/Sydney")).isoformat()
+                "CreatedAt": row["created_at"]
             }
         }
+
+        url = f"https://graph.microsoft.com/v1.0/sites/{SITE_ID}/lists/{LIST_ID}/items"
+        r = requests.post(url, headers=headers, json=payload)
+
+        if r.status_code not in (200, 201):
+            print(f"❌ Row {idx} failed to insert:")
+            print("Payload sent:", payload)
+            print("Response:", r.status_code, r.text)
+        else:
+            print(f"✅ Row {idx} inserted successfully!")
 
         # Debug: print payload for each row
         print(f"Row {idx} payload:")
