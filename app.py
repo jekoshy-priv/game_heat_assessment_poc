@@ -326,55 +326,53 @@ if calculate:
     if not all_fields_filled(form_values):
         st.warning("⚠️ Please fill in all fields before submitting.")
     else:
+        # -----------------------------
+        # CALCULATION FIRST
+        # -----------------------------
+        full_df, results = calculate_heat_metrics(
+            air_temp=air_temp,
+            globe_temp=globe_temp,
+            humidity=humidity,
+            air_speed=air_speed,
+            gender=gender,
+            record_type=record_type,
+            club=club_name,
+            venue=venue
+        )
+
+        # Display results with color
+        styled_results = results.copy()
+        styled_results["Assessment"] = styled_results["Assessment"].apply(
+            lambda x: f'<div style="{assessment_color(x)} padding:4px; text-align:center">{x}</div>'
+        )
+        html_table = styled_results.to_html(index=False, escape=False)
+        st.markdown(f'<div style="overflow-x:auto; width:100%">{html_table}</div>',
+                    unsafe_allow_html=True)
+
+        # -----------------------------
+        # THEN TRY LOGGING TO SHAREPOINT
+        # -----------------------------
+        log_df = pd.DataFrame({
+            "club": full_df["club"],
+            "records_type": full_df["records_type"],
+            "venue": full_df["venue"],
+            "gender": full_df["gender"],
+            "air_temp": air_temp,
+            "air_speed": air_speed,
+            "globe_temp": globe_temp,
+            "humidity": humidity,
+            "player": full_df["Player"],
+            "assessment": full_df["Assessment"],
+            "HSI": full_df["HSI"],
+            "sweat_rate": full_df["Sweat_Rate"],
+            "created_at": full_df["created_at"],
+        })
+
         try:
-            full_df, results = calculate_heat_metrics(
-                air_temp=air_temp,
-                globe_temp=globe_temp,
-                humidity=humidity,
-                air_speed=air_speed,
-                gender=gender,
-                record_type=record_type,
-                club=club_name,
-                venue=venue
-            )
-
-            # -----------------------------
-            # Log to CSV
-            # -----------------------------
-            log_df = pd.DataFrame({
-                "club": full_df["club"],
-                "records_type": full_df["records_type"],
-                "venue": full_df["venue"],
-                "gender": full_df["gender"],
-                "air_temp": air_temp,
-                "air_speed": air_speed,
-                "globe_temp": globe_temp,
-                "humidity": humidity,
-                "player": full_df["Player"],
-                "assessment": full_df["Assessment"],
-                "HSI": full_df["HSI"],
-                "sweat_rate": full_df["Sweat_Rate"],
-                "created_at": full_df["created_at"],
-            })
-
             insert_to_sharepoint(log_df)
-
-            results = results.reset_index(drop=True)
-
-            # -----------------------------
-            # Display results with color
-            # -----------------------------
-            styled_results = results.copy()
-            styled_results["Assessment"] = styled_results["Assessment"].apply(
-                lambda x: f'<div style="{assessment_color(x)} padding:4px; text-align:center">{x}</div>'
-            )
-
-            html_table = styled_results.to_html(index=False, escape=False)
-            st.markdown(f'<div style="overflow-x:auto; width:100%">{html_table}</div>',
-                        unsafe_allow_html=True)
-
+            st.success("✅ Data successfully sent to SharePoint")
         except Exception as e:
-            st.error(f"⚠️ Could not calculate heat metrics: {e}")
+            st.warning(f"⚠️ Could not send data to SharePoint: {e}")
 
     #st.success(f"CSV written to: {os.path.abspath(CSV_PATH)}")
 
