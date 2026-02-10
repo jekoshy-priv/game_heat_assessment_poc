@@ -7,9 +7,9 @@ import os
 import msal 
 import requests
 
-TENANT_ID = os.getenv("TENANT_ID")
-CLIENT_ID = os.getenv("CLIENT_ID")
-CLIENT_SECRET = os.getenv("CLIENT_SECRET")
+TENANT_ID = st.secrets("TENANT_ID")
+CLIENT_ID = st.secrets("CLIENT_ID")
+CLIENT_SECRET = st.secrets("CLIENT_SECRET")
 
 AUTHORITY = f"https://login.microsoftonline.com/{TENANT_ID}"
 SCOPE = ["https://graph.microsoft.com/.default"]
@@ -18,8 +18,8 @@ SCOPE = ["https://graph.microsoft.com/.default"]
 
 log_df = []
 
-SITE_ID = os.getenv("SITE_ID")
-LIST_ID = os.getenv("LIST_ID")
+SITE_ID = st.secrets("SITE_ID")
+LIST_ID = st.secrets("LIST_ID")
 
 def insert_to_sharepoint(log_df):
     token = get_graph_token()
