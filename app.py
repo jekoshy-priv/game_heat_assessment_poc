@@ -34,7 +34,7 @@ def insert_to_sharepoint(log_df):
                 "Title": row["player"],
 
                 "Club": row["club"],
-                "RecordType": row["records_type"],
+                "Record_x0020_Type": row["records_type"],
                 "Venue": row["venue"],
                 "Gender": row["gender"],
                 "AirTemperature_x0028_C_x0029_": float(row["air_temp"]),
