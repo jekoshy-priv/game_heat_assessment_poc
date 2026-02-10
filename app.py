@@ -4,10 +4,58 @@ import numpy as np
 import datetime
 from zoneinfo import ZoneInfo 
 import os
+import msal 
+import requests
 
-CSV_PATH = "heat_assessment_log.csv"
+TENANT_ID = st.secrets["TENANT_ID"]
+CLIENT_ID = st.secrets["CLIENT_ID"]
+CLIENT_SECRET = st.secrets["CLIENT_SECRET"]
+
+AUTHORITY = f"https://login.microsoftonline.com/{TENANT_ID}"
+SCOPE = ["https://graph.microsoft.com/.default"]
+
+#CSV_PATH = "heat_assessment_log.csv"
 
 log_df = []
+
+SITE_ID = st.secrets["SITE_ID"]
+LIST_ID = st.secrets["LIST_ID"]
+
+def insert_to_sharepoint(log_df):
+    token = get_graph_token()
+    headers = {
+        "Authorization": f"Bearer {token}",
+        "Content-Type": "application/json"
+    }
+
+    for _, row in log_df.iterrows():
+        payload = {
+                    "fields": {
+                        "Title": row["player"],
+
+                        "Club": row["club"],
+                        "Record_x0020_Type": row["records_type"],
+                        "Venue": row["venue"],
+                        "Gender": row["gender"],
+                        "AirTemperature_x0028_C_x0029_": float(row["air_temp"]),
+                        "AirSpeed_x0028_m_x002f_s_x0029_": float(row["air_speed"]),
+                        "GlobeTemperature_x0028_C_x0029_": float(row["globe_temp"]),
+                        "Humidity_x0028__x0025__x0029_": float(row["humidity"]),
+
+                        "HSI": int(row["HSI"]),
+
+                        "Assessment": row["assessment"],
+                        "SweatRate": float(row["sweat_rate"]),
+
+                        "CreatedAt": row["created_at"]
+                    }
+                }
+
+        url = f"https://graph.microsoft.com/v1.0/sites/{SITE_ID}/lists/{LIST_ID}/items"
+        r = requests.post(url, headers=headers, json=payload)
+
+        if r.status_code not in (200, 201):
+            raise Exception(r.text)
 
 st.set_page_config(
     page_title="NRL Game Heat Assessment",
@@ -30,6 +78,17 @@ clubs = [
     "Sea Eagles","Storm","Warriors","Knights","Cowboys","Eels",
     "Panthers","Rabbitohs","Dragons","Roosters","Wests Tigers"
 ]
+
+def get_graph_token():
+    app = msal.ConfidentialClientApplication(
+        CLIENT_ID,
+        authority=AUTHORITY,
+        client_credential=CLIENT_SECRET
+    )
+    result = app.acquire_token_for_client(scopes=SCOPE)
+    if "access_token" not in result:
+        raise Exception("Could not acquire Graph token")
+    return result["access_token"]
 
 def float_input(label, default=""):
     value = st.text_input(label, value=default)
@@ -221,6 +280,7 @@ def calculate_heat_metrics(
     df["created_at"] = datetime.datetime.now(ZoneInfo("Australia/Sydney")).strftime("%Y-%m-%d %H:%M:%S")
 
     full_df = df.copy()
+    
 
     return full_df, df[[
         "Player",
@@ -291,19 +351,18 @@ if calculate:
                 "records_type": full_df["records_type"],
                 "venue": full_df["venue"],
                 "gender": full_df["gender"],
+                "air_temp": air_temp,
                 "air_speed": air_speed,
                 "globe_temp": globe_temp,
                 "humidity": humidity,
                 "player": full_df["Player"],
                 "assessment": full_df["Assessment"],
+                "HSI": full_df["HSI"],
                 "sweat_rate": full_df["Sweat_Rate"],
                 "created_at": full_df["created_at"],
             })
 
-            if os.path.exists(CSV_PATH):
-                log_df.to_csv(CSV_PATH, mode="a", header=False, index=False)
-            else:
-                log_df.to_csv(CSV_PATH, mode="w", header=True, index=False)
+            insert_to_sharepoint(log_df)
 
             results = results.reset_index(drop=True)
 
