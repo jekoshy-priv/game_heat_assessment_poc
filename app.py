@@ -85,13 +85,38 @@ def get_graph_token():
         raise Exception("Could not acquire Graph token")
     return result["access_token"]
 
-def float_input(label, default=""):
+def float_input(
+    label,
+    default="",
+    min_value=None,
+    max_value=None,
+    decimals=2
+):
     value = st.text_input(label, value=default)
-    try:
-        return float(value) if value != "" else None
-    except ValueError:
-        st.error(f"{label} must be a number")
+
+    # Allow empty input
+    if value.strip() == "":
         return None
+
+    try:
+        num = float(value)
+    except ValueError:
+        st.error(f"{label} must be a valid number")
+        return None
+
+    # Range validation
+    if min_value is not None and num < min_value:
+        st.error(f"{label} must be ≥ {min_value}")
+        return None
+
+    if max_value is not None and num > max_value:
+        st.error(f"{label} must be ≤ {max_value}")
+        return None
+
+    # Decimal enforcement
+    num = round(num, decimals)
+
+    return num
     
 def all_fields_filled(fields: dict):
     """Return True if all values in the dictionary are not None or empty."""
@@ -110,17 +135,20 @@ with st.form("heat_assessment_form"):
         gender = st.selectbox("Gender", ["","Male", "Female"])
 
     with col2:
-        air_temp = st.number_input(
-            "Air Temperature (°C)", min_value=-50.0, max_value=60.0, value=" "
+        air_temp = float_input(
+            "Air Temperature (°C)", min_value=-50, max_value=60
         )
-        globe_temp = st.number_input(
-            "Globe Temperature (°C)", min_value=-50.0, max_value=100.0, value=" "
+
+        globe_temp = float_input(
+            "Globe Temperature (°C)", min_value=-50, max_value=100
         )
-        humidity = st.number_input(
-            "Humidity (%)", min_value=0.0, max_value=100.0, value=" "
+
+        humidity = float_input(
+            "Humidity (%)", min_value=0, max_value=100
         )
-        air_speed = st.number_input(
-            "Air Speed (m/s)", min_value=0.0, value=" "
+
+        air_speed = float_input(
+            "Air Speed (m/s)", min_value=0
         )
 
     calculate = st.form_submit_button("Submit")
