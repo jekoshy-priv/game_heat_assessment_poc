@@ -21,10 +21,14 @@ SITE_ID = st.secrets["SITE_ID"]
 LIST_ID = st.secrets["LIST_ID"]
 
 def insert_to_sharepoint(log_df):
+
+    site_url = "https://nrlau.sharepoint.com/:l:/r/teams/football/Lists/Heat%20Policy%20Log?e=FqosUb"
+
     token = get_graph_token()
     headers = {
         "Authorization": f"Bearer {token}",
-        "Content-Type": "application/json"
+        "Accept": "application/json;odata=verbose",
+        "Content-Type": "application/json;odata=verbose"
     }
 
     for _, row in log_df.iterrows():
@@ -46,8 +50,8 @@ def insert_to_sharepoint(log_df):
                         "CreatedAt": row["created_at"]
                     }
                 }
-
-        url = f"https://graph.microsoft.com/v1.0/sites/{SITE_ID}/lists/{LIST_ID}/items"
+        
+        url = f"{site_url}/_api/web/lists(guid'{LIST_ID}')/items"
         r = requests.post(url, headers=headers, json=payload)
 
         if r.status_code not in (200, 201):
