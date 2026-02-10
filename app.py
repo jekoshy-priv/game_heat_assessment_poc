@@ -111,16 +111,16 @@ with st.form("heat_assessment_form"):
 
     with col2:
         air_temp = st.number_input(
-            "Air Temperature (°C)", min_value=-50.0, max_value=60.0, format="%.2f"
+            "Air Temperature (°C)", min_value=-50.0, max_value=60.0, value=" "
         )
         globe_temp = st.number_input(
-            "Globe Temperature (°C)", min_value=-50.0, max_value=100.0, format="%.2f"
+            "Globe Temperature (°C)", min_value=-50.0, max_value=100.0, value=" "
         )
         humidity = st.number_input(
-            "Humidity (%)", min_value=0.0, max_value=100.0, format="%.2f"
+            "Humidity (%)", min_value=0.0, max_value=100.0, value=" "
         )
         air_speed = st.number_input(
-            "Air Speed (m/s)", min_value=0.0, format="%.2f"
+            "Air Speed (m/s)", min_value=0.0, value=" "
         )
 
     calculate = st.form_submit_button("Submit")
