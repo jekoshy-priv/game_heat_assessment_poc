@@ -31,18 +31,18 @@ def insert_to_sharepoint(log_df):
                     "fields": {
                         "Title": row["player"],
                         "Club": row["club"],
-                        "RecordType": row["records_type"],
+                        "Record_x0020_Type": row["records_type"],
                         "Venue": row["venue"],
                         "Gender": row["gender"],
-                        "AirTemperature_x0028_C_x0029_": str(row["air_temp"]),
-                        "GlobeTemperature_x0028_C_x0029_": str(row["globe_temp"]),
-                        "Humidity_x0028__x0025__x0029_": str(row["humidity"]),
-                        "AirSpeed_x0028_m_x002f_s_x0029_": str(row["air_speed"]),
-                        "PlayerAssessment": row["player"],
+                        "AirTemperature_x0028_C_x0029_": float(row["air_temp"]),
+                        "GlobeTemperature_x0028_C_x0029_": float(row["globe_temp"]),
+                        "Humidity_x0028__x0025__x0029_": float(row["humidity"]),
+                        "AirSpeed_x0028_m_x002f_s_x0029_": float(row["air_speed"]),
+                        "Player": row["player"],
                         "Assessment": row["assessment"],
-                        "HSI": str(row["HSI"]),
-                        "SweatRate": str(row["sweat_rate"]),
-                        "CreatedAt": str(row["created_at"])
+                        "HSI": int(row["HSI"]),
+                        "SweatRate": float(row["sweat_rate"]),
+                        "CreatedAt": row["created_at"]
                     }
                 }
 
