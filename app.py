@@ -13,7 +13,7 @@ CLIENT_ID = st.secrets["CLIENT_ID"]
 CLIENT_SECRET = st.secrets["CLIENT_SECRET"]
 
 AUTHORITY = f"https://login.microsoftonline.com/{TENANT_ID}"
-SCOPE = ["https://graph.microsoft.com/.default"]
+SCOPE = ["https://nrl.sharepoint.com/.default"]
 
 #CSV_PATH = "heat_assessment_log.csv"
 
@@ -85,9 +85,14 @@ def get_graph_token():
         authority=AUTHORITY,
         client_credential=CLIENT_SECRET
     )
-    result = app.acquire_token_for_client(scopes=SCOPE)
+
+    result = app.acquire_token_for_client(
+        scopes=["https://YOURTENANT.sharepoint.com/.default"]
+    )
+
     if "access_token" not in result:
-        raise Exception("Could not acquire Graph token")
+        raise Exception(result)
+
     return result["access_token"]
 
 def float_input(
