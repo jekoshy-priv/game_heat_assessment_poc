@@ -22,7 +22,7 @@ LIST_ID = st.secrets["LIST_ID"]
 
 def insert_to_sharepoint(log_df):
 
-    site_url = "https://nrlau.sharepoint.com/teams/football/Lists/Heat%20Policy%20Log/AllItems.aspx?e=3%3A61edab8b433d44dda6d5c0605be2cbc0&sharingv2=true&fromShare=true&at=9&CID=42998cac%2D9fa5%2D440a%2Dadc9%2D272c8ae3446c"
+    site_url = "https://nrlau.sharepoint.com/:l:/r/teams/football/Lists/Heat%20Policy%20Log?e=FqosUb"
 
     token = get_graph_token()
     headers = {
