@@ -22,36 +22,35 @@ LIST_ID = st.secrets["LIST_ID"]
 
 def insert_to_sharepoint(log_df):
 
-    site_url = "https://nrlau.sharepoint.com/:l:/r/teams/football/Lists/Heat%20Policy%20Log?e=FqosUb"
-
     token = get_graph_token()
+
     headers = {
         "Authorization": f"Bearer {token}",
-        "Accept": "application/json;odata=verbose",
-        "Content-Type": "application/json;odata=verbose"
+        "Content-Type": "application/json"
     }
 
     for _, row in log_df.iterrows():
         payload = {
-                    "fields": {
-                        "Title": row["player"],
-                        "Club": row["club"],
-                        "Record_x0020_Type": row["records_type"],
-                        "Venue": row["venue"],
-                        "Gender": row["gender"],
-                        "AirTemperature_x0028_C_x0029_": float(row["air_temp"]),
-                        "GlobeTemperature_x0028_C_x0029_": float(row["globe_temp"]),
-                        "Humidity_x0028__x0025__x0029_": float(row["humidity"]),
-                        "AirSpeed_x0028_m_x002f_s_x0029_": float(row["air_speed"]),
-                        "Player": row["player"],
-                        "Assessment": row["assessment"],
-                        "HSI": int(row["HSI"]),
-                        "SweatRate": float(row["sweat_rate"]),
-                        "CreatedAt": row["created_at"]
-                    }
-                }
-        
-        url = f"{site_url}/_api/web/lists(guid'{LIST_ID}')/items"
+            "fields": {
+                "Title": row["player"],
+                "Club": row["club"],
+                "Record_x0020_Type": row["records_type"],
+                "Venue": row["venue"],
+                "Gender": row["gender"],
+                "AirTemperature_x0028_C_x0029_": float(row["air_temp"]),
+                "GlobeTemperature_x0028_C_x0029_": float(row["globe_temp"]),
+                "Humidity_x0028__x0025__x0029_": float(row["humidity"]),
+                "AirSpeed_x0028_m_x002f_s_x0029_": float(row["air_speed"]),
+                "Player": row["player"],
+                "Assessment": row["assessment"],
+                "HSI": int(row["HSI"]),
+                "SweatRate": float(row["sweat_rate"]),
+                "CreatedAt": row["created_at"]
+            }
+        }
+
+        url = f"https://graph.microsoft.com/v1.0/sites/{SITE_ID}/lists/{LIST_ID}/items"
+
         r = requests.post(url, headers=headers, json=payload)
 
         if r.status_code not in (200, 201):
@@ -80,29 +79,19 @@ clubs = [
 ]
 
 def get_graph_token():
-    app = msal.PublicClientApplication(
+    app = msal.ConfidentialClientApplication(
         client_id=CLIENT_ID,
-        authority=AUTHORITY
+        authority=AUTHORITY,
+        client_credential=CLIENT_SECRET,
     )
 
-    # Try to get token from cache
-    accounts = app.get_accounts()
-    if accounts:
-        result = app.acquire_token_silent(SCOPE, account=accounts[0])
-        if result and "access_token" in result:
-            return result["access_token"]
+    result = app.acquire_token_for_client(
+        scopes=["https://graph.microsoft.com/.default"]
+    )
 
-    # If no cached token, do interactive login
-    flow = app.initiate_device_flow(scopes=SCOPE)
-    if "user_code" not in flow:
-        raise Exception("Failed to create device flow")
-    
-    st.info(f"Go to {flow['verification_uri']} and enter code: {flow['user_code']}")
-    result = app.acquire_token_by_device_flow(flow)  # This waits for user to authenticate
-    
     if "access_token" not in result:
-        raise Exception(f"Failed to acquire token: {result.get('error_description')}")
-    
+        raise Exception(f"Failed to acquire token: {result}")
+
     return result["access_token"]
 
 def float_input(
