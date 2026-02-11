@@ -41,8 +41,7 @@ def insert_to_sharepoint(log_df):
                         "GlobeTemperature_x0028_C_x0029_": str(row["globe_temp"]),
                         "Humidity_x0028__x0025__x0029_": str(row["humidity"]),
                         "AirSpeed_x0028_m_x002f_s_x0029_": str(row["air_speed"]),
-                        "PlayerAssessment": str(row["player"]),
-                        "Assessment": str(row["assessment"]),
+                        "Player": str(row["player"]),   # ✅ Correct now
                         "HSI": str(row["HSI"]),
                         "SweatRate": str(row["sweat_rate"]),
                         "CreatedAt": str(row["created_at"])
