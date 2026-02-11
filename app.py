@@ -419,7 +419,7 @@ if calculate:
 
         try:
             insert_to_sharepoint(log_df)
-            st.success("✅ Data successfully sent to SharePoint")
+            #st.success("✅ Data successfully sent to SharePoint")
         except Exception as e:
             st.warning(f"⚠️ Could not send data to SharePoint: {e}")
 
