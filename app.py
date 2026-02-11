@@ -76,21 +76,21 @@ clubs = [
     "Panthers","Rabbitohs","Dragons","Roosters","Wests Tigers"
 ]
 
-#def get_graph_token():
-#    app = msal.ConfidentialClientApplication(
-#        client_id=CLIENT_ID,
-#        authority=AUTHORITY,
-#        client_credential=CLIENT_SECRET,
-#    )
+def get_graph_token():
+    app = msal.ConfidentialClientApplication(
+        client_id=CLIENT_ID,
+        authority=AUTHORITY,
+        client_credential=CLIENT_SECRET,
+    )
 
- #   result = app.acquire_token_for_client(
- #       scopes=["https://graph.microsoft.com/.default"]
- #   )
+    result = app.acquire_token_for_client(
+        scopes=["https://graph.microsoft.com/.default"]
+    )
 
-  #  if "access_token" not in result:
-  #      raise Exception(f"Failed to acquire token: {result}")
+    if "access_token" not in result:
+        raise Exception(f"Failed to acquire token: {result}")
 
-    #return result["access_token"]
+    return result["access_token"]
 
 def float_input(
     label,
