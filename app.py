@@ -13,7 +13,7 @@ CLIENT_ID = st.secrets["CLIENT_ID"]
 CLIENT_SECRET = st.secrets["CLIENT_SECRET"]
 
 AUTHORITY = f"https://login.microsoftonline.com/{TENANT_ID}"
-SCOPE = ["https://nrl.sharepoint.com/.default"]
+SCOPE = ["Sites.Selected", "User.Read"]
 
 #CSV_PATH = "heat_assessment_log.csv"
 
@@ -80,19 +80,29 @@ clubs = [
 ]
 
 def get_graph_token():
-    app = msal.ConfidentialClientApplication(
-        CLIENT_ID,
-        authority=AUTHORITY,
-        client_credential=CLIENT_SECRET
+    app = msal.PublicClientApplication(
+        client_id=CLIENT_ID,
+        authority=AUTHORITY
     )
 
-    result = app.acquire_token_for_client(
-        scopes=["https://YOURTENANT.sharepoint.com/.default"]
-    )
+    # Try to get token from cache
+    accounts = app.get_accounts()
+    if accounts:
+        result = app.acquire_token_silent(SCOPE, account=accounts[0])
+        if result and "access_token" in result:
+            return result["access_token"]
 
+    # If no cached token, do interactive login
+    flow = app.initiate_device_flow(scopes=SCOPE)
+    if "user_code" not in flow:
+        raise Exception("Failed to create device flow")
+    
+    st.info(f"Go to {flow['verification_uri']} and enter code: {flow['user_code']}")
+    result = app.acquire_token_by_device_flow(flow)  # This waits for user to authenticate
+    
     if "access_token" not in result:
-        raise Exception(result)
-
+        raise Exception(f"Failed to acquire token: {result.get('error_description')}")
+    
     return result["access_token"]
 
 def float_input(
