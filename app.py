@@ -321,7 +321,9 @@ def calculate_heat_metrics(
     df["club"] = club
     df["venue"] = venue
     df["gender"] = gender
-    df["created_at"] = datetime.datetime.now(ZoneInfo("Australia/Sydney")).isoformat()
+    df["created_at"] = datetime.datetime.now(
+                ZoneInfo("Australia/Sydney")
+            ).strftime("%Y-%m-%d %H:%M:%S")
 
     full_df = df.copy()
     
