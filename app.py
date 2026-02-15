@@ -43,6 +43,7 @@ def insert_to_sharepoint(log_df):
                         "AirSpeed_x0028_m_x002f_s_x0029_": str(row["air_speed"]),
                         "HSI": str(row["HSI"]),
                         "SweatRate": str(row["sweat_rate"]),
+                        "Assessment": str(row["Assessment"]),
                         "CreatedAt": str(row["created_at"])
                     }
                 }
